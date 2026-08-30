@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Kiks is Zoya's grey dwarf hamster. Her night-shift timetable, her snack menu, and the rules for holding her.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F5EFE1" id="theme-color">
+<title>Kiks the Hamster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fredoka:wght@500;600;700&family=Lexend:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#F5EFE1;
+    --surface:#FFFAF0;
+    --ink:#322B4E;
+    --muted:#655C82;
+    --accent:#9B5E09;
+    --accent-bright:#C77B0E;
+    --accent-soft:#F6DFAE;
+    --accent2:#26766B;
+    --danger:#A32A1E;
+    --danger-fill:#FCEEEA;
+    --line:#9B8760;
+    --seed:#2E2740;
+    --on-bright:#20193A;
+    --shadow:rgba(50,43,78,.14);
+    --fur:#A2988A;
+    --fur-hi:#B6AC9C;
+    --fur-lo:#6B6255;
+    --fur-belly:#EFE7DB;
+
+    --zzz-op:1;
+    --eye-open:0;
+    --eye-shut:1;
+    --spin-state:paused;
+    --spin-dur:1.5s;
+    --bob-state:paused;
+    --glow:0;
+    --stuff:1;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#161231;
+      --surface:#221C46;
+      --ink:#F3EFFF;
+      --muted:#A79FD0;
+      --accent:#FFC94A;
+      --accent-bright:#FFC94A;
+      --accent-soft:#3A2F63;
+      --accent2:#6FE3C6;
+      --danger:#FF9E90;
+      --danger-fill:#3A2038;
+      --line:#7264BC;
+      --seed:#D9CBA8;
+      --shadow:rgba(0,0,0,.5);
+      --fur:#9C9384;
+      --fur-hi:#B2A897;
+      --fur-lo:#645C50;
+      --fur-belly:#E7DFD2;
+
+      --zzz-op:0;
+      --eye-open:1;
+      --eye-shut:0;
+      --spin-state:running;
+      --bob-state:running;
+      --glow:1;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#161231;
+    --surface:#221C46;
+    --ink:#F3EFFF;
+    --muted:#A79FD0;
+    --accent:#FFC94A;
+    --accent-bright:#FFC94A;
+    --accent-soft:#3A2F63;
+    --accent2:#6FE3C6;
+    --danger:#FF9E90;
+    --danger-fill:#3A2038;
+    --line:#7264BC;
+    --seed:#D9CBA8;
+    --shadow:rgba(0,0,0,.5);
+    --fur:#9C9384;
+    --fur-hi:#B2A897;
+    --fur-lo:#645C50;
+    --fur-belly:#E7DFD2;
+
+    --zzz-op:0;
+    --eye-open:1;
+    --eye-shut:0;
+    --spin-state:running;
+    --bob-state:running;
+    --glow:1;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;scrollbar-color:var(--line) transparent}
+  img{max-width:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Lexend",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-weight:400;
+    line-height:1.6;
+    caret-color:var(--accent);
+    -webkit-font-smoothing:antialiased;
+    transition:background-color .45s ease,color .45s ease;
+  }
+  ::selection{background:var(--accent-soft);color:var(--ink)}
+
+  .page{
+    max-width:960px;
+    margin:0 auto;
+    padding:clamp(24px,5vw,56px) clamp(18px,4vw,32px) 56px;
+    display:flex;
+    flex-direction:column;
+    gap:clamp(52px,7vw,88px);
+  }
+
+  h1,h2,h3{font-family:"Fredoka","Trebuchet MS",sans-serif;text-wrap:balance;margin:0;line-height:1.05}
+  h1{font-size:clamp(3.4rem,13vw,6rem);font-weight:700;letter-spacing:-.025em}
+  h2{font-size:clamp(1.6rem,4.4vw,2.2rem);font-weight:600;letter-spacing:-.015em}
+  h3{font-size:1.1rem;font-weight:600}
+  p{margin:0}
+
+  .ic{flex:none;width:20px;height:20px;stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ---------- hero ---------- */
+  .hero{display:grid;grid-template-columns:1fr;gap:clamp(26px,4vw,40px);align-items:center}
+  @media (min-width:800px){ .hero{grid-template-columns:1.02fr .98fr} }
+
+  .hero-copy{display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+  .lede{font-size:clamp(1.08rem,2.4vw,1.28rem);max-width:32ch}
+  .lede b{font-weight:600;color:var(--accent)}
+  .byline{font-size:1rem;color:var(--muted)}
+  .byline strong{font-family:"Fredoka","Trebuchet MS",sans-serif;font-weight:600;font-size:1.22em;color:var(--ink);letter-spacing:-.01em}
+
+  .status{
+    display:inline-flex;align-items:center;gap:11px;
+    padding:9px 18px 9px 13px;
+    border:2px solid var(--line);
+    border-radius:999px;
+    background:var(--surface);
+    font-family:"DM Mono",ui-monospace,monospace;
+    font-size:.8rem;line-height:1.35;
+    transition:background-color .45s ease,border-color .45s ease;
+  }
+  .dot{
+    flex:none;width:11px;height:11px;border-radius:50%;
+    background:var(--accent-bright);
+    box-shadow:0 0 calc(var(--glow) * 11px) 1px var(--accent-bright), 0 0 0 3px var(--accent-soft);
+    transition:box-shadow .45s ease;
+  }
+  .hero-actions{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:center}
+  .toggle{
+    font-family:"Fredoka","Trebuchet MS",sans-serif;
+    font-size:1.02rem;font-weight:600;
+    color:var(--bg);background:var(--ink);
+    border:none;cursor:pointer;
+    padding:14px 26px;
+    border-radius:22px 16px 22px 16px;
+    transition:transform .18s cubic-bezier(.2,.8,.3,1),background-color .45s ease,color .45s ease;
+  }
+  .toggle:hover{transform:translateY(-2px)}
+  .toggle:active{transform:translateY(0)}
+  .link{
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--accent);font-size:.98rem;font-weight:500;
+    text-decoration-thickness:2px;text-underline-offset:4px;
+    text-decoration-color:var(--accent-soft);
+  }
+  .link:hover{text-decoration-color:var(--accent)}
+  .link .ic{width:17px;height:17px;stroke:currentColor}
+  :is(.toggle,.seed-btn,.link):focus-visible{outline:3px solid var(--accent2);outline-offset:3px;border-radius:6px}
+
+  /* ---------- the stage: hamster + feeder together ---------- */
+  .stage{
+    background:var(--surface);
+    border:2px solid var(--line);
+    border-radius:44px 36px 46px 34px;
+    padding:14px 14px 0;
+    box-shadow:0 20px 44px -26px var(--shadow);
+    overflow:hidden;
+    transition:background-color .45s ease,border-color .45s ease;
+  }
+  .stage svg.scene{display:block;width:100%;height:auto}
+  #wheel{
+    stroke:var(--line);
+    transform-origin:200px 152px;
+    animation:spin var(--spin-dur) linear infinite;
+    animation-play-state:var(--spin-state);
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .ground{stroke:var(--line)}
+  #hammy{
+    transform-origin:200px 250px;
+    animation:bob .34s ease-in-out infinite alternate;
+    animation-play-state:var(--bob-state);
+  }
+  @keyframes bob{from{transform:translateY(0)}to{transform:translateY(-4px)}}
+  .eye-open{opacity:var(--eye-open)}
+  .eye-shut{opacity:var(--eye-shut)}
+  .eye-open,.eye-shut{transition:opacity .4s ease}
+  .zzz{opacity:var(--zzz-op);font-family:"Fredoka","Trebuchet MS",sans-serif;font-weight:600;fill:var(--muted);transition:opacity .4s ease}
+  .zzz text{animation:float 2.6s ease-in-out infinite}
+  .zzz text:nth-of-type(2){animation-delay:.5s}
+  .zzz text:nth-of-type(3){animation-delay:1s}
+  @keyframes float{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-7px);opacity:1}}
+  .f-fur{fill:var(--fur)}
+  .f-hi{fill:var(--fur-hi)}
+  .f-belly{fill:var(--fur-belly)}
+  .s-lo{stroke:var(--fur-lo)}
+  .cheek{
+    transform-box:fill-box;transform-origin:center;
+    transform:scale(var(--stuff));
+    transition:transform .34s cubic-bezier(.2,.9,.3,1);
+  }
+
+  .feeder{
+    margin:0 -14px;
+    border-top:2px solid var(--line);
+    background:var(--surface);
+    padding:18px clamp(16px,3vw,24px) 20px;
+    display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;
+    transition:background-color .45s ease,border-color .45s ease;
+  }
+  .seed-btn{
+    font-family:"Fredoka","Trebuchet MS",sans-serif;font-size:1.05rem;font-weight:600;
+    background:var(--accent-bright);color:var(--on-bright);
+    border:none;border-radius:20px 14px 20px 14px;
+    padding:13px 22px;cursor:pointer;
+    transition:transform .18s cubic-bezier(.2,.8,.3,1);
+  }
+  .seed-btn:hover{transform:translateY(-2px)}
+  .seed-btn:active{transform:translateY(0) scale(.97)}
+  .pouch{display:flex;gap:6px;flex-wrap:wrap;flex:1 1 120px;min-height:20px}
+  .seed{
+    width:13px;height:19px;border-radius:50% 50% 46% 46%;
+    background:var(--seed);
+    transform:rotate(-12deg);
+    animation:pop .3s cubic-bezier(.2,.9,.3,1);
+  }
+  .seed:nth-child(even){transform:rotate(14deg)}
+  @keyframes pop{from{transform:scale(0)}}
+  .pouch-msg{flex:1 1 100%;font-size:.95rem;color:var(--ink)}
+
+  /* ---------- sections ---------- */
+  .sec{display:flex;flex-direction:column;gap:24px}
+  .sec-head{display:flex;flex-direction:column;gap:8px}
+  .sec-head p{color:var(--muted);max-width:58ch}
+
+  /* numbers */
+  .figures{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;max-width:52ch}
+  .figures li{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+  .fig{
+    font-family:"Fredoka","Trebuchet MS",sans-serif;font-size:1.7rem;font-weight:600;
+    color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.1;
+    min-width:4.6ch;
+  }
+  .figures span:last-child{color:var(--ink)}
+
+  /* night shift */
+  .shift{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+  .shift li{
+    display:grid;grid-template-columns:78px 1fr;gap:8px 16px;align-items:baseline;
+    padding:15px 0;border-top:2px dotted var(--line);
+  }
+  .shift li:last-child{border-bottom:2px dotted var(--line)}
+  .shift li.now{background:var(--accent-soft);padding-inline:14px;margin-inline:-14px;border-radius:10px}
+  .shift li.now time{color:var(--ink);font-weight:500}
+  .shift time{font-family:"DM Mono",ui-monospace,monospace;font-size:.82rem;color:var(--accent);font-variant-numeric:tabular-nums}
+
+  /* snack menu */
+  .menu{display:grid;grid-template-columns:1fr;gap:16px}
+  @media (min-width:640px){ .menu{grid-template-columns:1fr 1fr} }
+  .card{
+    background:var(--surface);
+    border:2px solid var(--line);
+    padding:24px;
+    display:flex;flex-direction:column;gap:14px;
+    transition:background-color .45s ease,border-color .45s ease;
+  }
+  .card.yes{border-radius:30px 22px 28px 24px}
+  .card.no{border-radius:22px 30px 24px 28px;background:var(--danger-fill);border-color:var(--danger)}
+  .card.yes h3{color:var(--accent2)}
+  .card.no h3{color:var(--danger)}
+  .card ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+  .card li{display:flex;gap:11px;align-items:flex-start}
+  .card .ic{margin-top:.18em}
+  .card.yes .ic{stroke:var(--accent2)}
+  .card.no .ic{stroke:var(--danger)}
+  .note{font-size:.92rem;color:var(--muted)}
+  .card.no .note{color:var(--ink)}
+
+  /* house rules */
+  .rules{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:12px}
+  @media (min-width:640px){ .rules{grid-template-columns:1fr 1fr} }
+  .rules li{
+    display:flex;gap:12px;align-items:flex-start;
+    background:var(--surface);border:2px solid var(--line);
+    border-radius:22px 16px 22px 16px;padding:15px 18px;
+    transition:background-color .45s ease,border-color .45s ease;
+  }
+  .rules .ic{stroke:var(--accent2);margin-top:.18em}
+
+  /* closing beat */
+  .closing{
+    font-family:"Fredoka","Trebuchet MS",sans-serif;
+    font-size:clamp(1.3rem,3.4vw,1.8rem);font-weight:500;
+    line-height:1.35;text-wrap:balance;max-width:24ch;
+    color:var(--ink);
+  }
+  .closing b{color:var(--accent);font-weight:600}
+
+  footer{
+    border-top:2px dotted var(--line);padding-top:20px;
+    font-size:.9rem;color:var(--muted);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+  }
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 13l5 5L20 6"/></symbol>
+  <symbol id="i-cross" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v15M5 13l7 7 7-7"/></symbol>
+</svg>
+
+<main class="page">
+
+  <header class="hero">
+    <div class="hero-copy">
+      <h1>Kiks</h1>
+      <p class="lede">A very small grey dwarf hamster with a <b>very big</b> night job: running, digging, and moving every seed in the house to a better spot.</p>
+      <p class="byline">Kept, fed and written about by <strong>Zoya</strong>.</p>
+      <p class="status"><span class="dot" aria-hidden="true"></span><span id="status-text" aria-live="polite">Kiks is asleep</span></p>
+      <div class="hero-actions">
+        <button class="toggle" id="toggle" type="button">Wake Kiks up</button>
+        <a class="link" href="#snacks">Feeding her? Rules are here <svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></a>
+      </div>
+    </div>
+
+    <div class="stage">
+      <svg class="scene" viewBox="0 0 400 320" role="img" aria-labelledby="art-title">
+        <title id="art-title">Kiks the grey dwarf hamster in her wheel</title>
+
+        <g class="zzz" aria-hidden="true" font-size="26">
+          <text x="300" y="86">z</text>
+          <text x="322" y="62" font-size="20">z</text>
+          <text x="340" y="42" font-size="15">z</text>
+        </g>
+
+        <g id="wheel" fill="none" stroke-width="6" stroke-linecap="round">
+          <circle cx="200" cy="152" r="118"/>
+          <circle cx="200" cy="152" r="104" stroke-width="3"/>
+          <g stroke-width="3">
+            <path d="M200 48v208M96 152h208M126 78l148 148M274 78 126 226"/>
+          </g>
+        </g>
+
+        <g id="hammy">
+          <ellipse class="f-fur" cx="205" cy="256" rx="56" ry="42"/>
+          <ellipse class="f-belly" cx="197" cy="272" rx="44" ry="24"/>
+          <path class="s-lo" d="M232 224c-22-8-46-6-62 6" stroke-width="7" stroke-linecap="round" fill="none"/>
+          <ellipse class="f-hi" cx="157" cy="248" rx="34" ry="31"/>
+          <ellipse class="f-fur" cx="150" cy="224" rx="11" ry="12"/>
+          <ellipse cx="150" cy="225" rx="6" ry="6.5" fill="#DFA9B0"/>
+          <ellipse class="cheek f-hi" cx="140" cy="258" rx="17" ry="14"/>
+          <ellipse class="cheek f-fur" cx="176" cy="264" rx="13" ry="11"/>
+          <g class="eye-open"><circle cx="146" cy="243" r="6.5" fill="#241F35"/><circle cx="148" cy="241" r="2.2" fill="#fff"/></g>
+          <path class="eye-shut" d="M139 244c4 4 9 4 13 0" stroke="#241F35" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+          <ellipse cx="127" cy="252" rx="5" ry="4" fill="#E08B9A"/>
+          <g class="s-lo" stroke-width="2" stroke-linecap="round">
+            <path d="M120 246 96 238M119 254 93 254M121 261 98 270"/>
+          </g>
+          <ellipse class="f-belly" cx="168" cy="288" rx="12" ry="7"/>
+          <ellipse class="f-belly" cx="214" cy="290" rx="13" ry="7"/>
+          <circle class="f-hi" cx="258" cy="262" r="6"/>
+        </g>
+
+        <path class="ground" d="M60 300h280" stroke-width="5" stroke-linecap="round"/>
+      </svg>
+
+      <div class="feeder">
+        <button class="seed-btn" id="feed" type="button">Give Kiks a seed</button>
+        <div class="pouch" id="pouch" aria-hidden="true"></div>
+        <p class="pouch-msg" id="pouch-msg" role="status">Cheeks empty. She can fit about twenty.</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="sec" id="numbers" aria-labelledby="numbers-h">
+    <div class="sec-head">
+      <h2 id="numbers-h">Kiks by the numbers</h2>
+      <p>Nobody has actually weighed her. These are good guesses for a hamster her size.</p>
+    </div>
+    <ul class="figures" role="list">
+      <li><span class="fig">45 g</span><span>about as heavy as a satsuma</span></li>
+      <li><span class="fig">8 km</span><span>on the wheel in one night, roughly eighty football pitches</span></li>
+      <li><span class="fig">20</span><span>sunflower seeds, carried in her cheeks, all at once</span></li>
+      <li><span class="fig">6 am</span><span>bedtime, give or take</span></li>
+    </ul>
+  </section>
+
+  <section class="sec" id="night" aria-labelledby="night-h">
+    <div class="sec-head">
+      <h2 id="night-h">The night shift</h2>
+      <p>Kiks sleeps all day and works all night. This is roughly what happens while everyone else is in bed.</p>
+    </div>
+    <ol class="shift" id="shift">
+      <li data-doing="stretching"><time datetime="19:30">7:30 pm</time><span>Wakes up. Enormous stretch. Sits still for a while thinking about it.</span></li>
+      <li data-doing="on the wheel"><time datetime="20:00">8:00 pm</time><span>First lap on the wheel. Then two hundred more.</span></li>
+      <li data-doing="raiding the snacks"><time datetime="21:15">9:15 pm</time><span>Snack raid &mdash; seeds go in the cheeks, cheeks go back to bed.</span></li>
+      <li data-doing="rearranging the house"><time datetime="23:00">11:00 pm</time><span>Rearranges the entire house. The bedding was in the wrong corner.</span></li>
+      <li data-doing="digging, seriously"><time datetime="02:00">2:00 am</time><span>Serious digging. No one knows what she is looking for.</span></li>
+      <li data-doing="on snack number twelve"><time datetime="04:30">4:30 am</time><span>Twelfth snack of the night.</span></li>
+      <li data-doing="going to bed"><time datetime="06:00">6:00 am</time><span>Back to bed. Do not disturb.</span></li>
+    </ol>
+  </section>
+
+  <section class="sec" id="snacks" aria-labelledby="snacks-h">
+    <div class="sec-head">
+      <h2 id="snacks-h">The snack menu</h2>
+      <p>Tiny hamster, tiny portions &mdash; a piece the size of your fingernail is a whole meal for Kiks.</p>
+    </div>
+    <div class="menu">
+      <div class="card yes">
+        <h3>Yes please</h3>
+        <ul role="list">
+          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Sunflower seeds &mdash; the absolute favourite</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>A sliver of cucumber</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Plain oats</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>A little broccoli or carrot</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>One mealworm, as a treat</span></li>
+        </ul>
+      </div>
+      <div class="card no">
+        <h3>Never ever</h3>
+        <ul role="list">
+          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span>Chocolate and sweets</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span>Oranges, lemons, anything citrus</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span>Onion and garlic</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span>Almonds</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span>Anything salty or from a packet</span></li>
+        </ul>
+        <p class="note">These can make her very ill. If you are not sure about a food, ask a grown-up before giving it to her.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="rules" aria-labelledby="rules-h">
+    <div class="sec-head">
+      <h2 id="rules-h">House rules</h2>
+      <p>Kiks is smaller than a phone and braver than she looks. This is how to be her favourite person.</p>
+    </div>
+    <ul class="rules" role="list">
+      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Scoop her up with two flat hands, low over her bed.</span></li>
+      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Never grab a sleeping hamster &mdash; say hello first and let her wake up.</span></li>
+      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Fresh water every single day, no days off.</span></li>
+      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Quiet voices near the cage. Her ears are enormous.</span></li>
+      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Wash your hands before, so you do not smell like snacks.</span></li>
+      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Dwarf hamsters live about two years. Make them good ones.</span></li>
+    </ul>
+  </section>
+
+  <p class="closing" id="closing">Right now, somewhere in this house, <b>Kiks is asleep</b>.</p>
+
+  <footer>Kiks &mdash; grey dwarf, night shift.</footer>
+</main>
+
+<script>
+  (function(){
+    var root = document.documentElement;
+    var btn = document.getElementById("toggle");
+    var label = document.getElementById("status-text");
+    var closing = document.getElementById("closing");
+    var themeMeta = document.getElementById("theme-color");
+
+    var WAKE = 19 * 60 + 30;   /* 7:30 pm */
+    var SLEEP = 6 * 60;        /* 6:00 am */
+    var GROUND = { light: "#F5EFE1", dark: "#161231" };
+
+    /* the timetable in the page is the clock's data source */
+    var rows = [].slice.call(document.querySelectorAll("#shift li")).map(function(li){
+      var t = li.querySelector("time").getAttribute("datetime").split(":");
+      return { li: li, min: (+t[0]) * 60 + (+t[1]), doing: li.getAttribute("data-doing") };
+    });
+
+    function nowMin(){ var d = new Date(); return d.getHours() * 60 + d.getMinutes(); }
+    function reallyAwake(m){ return m >= WAKE || m < SLEEP; }
+
+    /* latest timetable row at or before now, wrapping through midnight */
+    function doingNow(m){
+      var best = null;
+      for (var i = 0; i < rows.length; i++){
+        var since = (m - rows[i].min + 1440) % 1440;
+        if (since < 720 && (best === null || since < best.since)) best = { row: rows[i], since: since };
+      }
+      return best ? best.row : null;
+    }
+
+    /* the override lives for this visit only, so the clock reclaims the page next time */
+    function saved(){ try { return sessionStorage.getItem("kiks-pretend"); } catch (e) { return null; } }
+    function save(v){ try { sessionStorage.setItem("kiks-pretend", v); } catch (e) {} }
+
+    var pretend = saved();
+    if (pretend !== "dark" && pretend !== "light") pretend = null;
+
+    function render(){
+      var m = nowMin();
+      var truth = reallyAwake(m);
+      var shown = pretend ? pretend === "dark" : truth;
+      var row = doingNow(m);
+
+      /* the clock drives the palette, not the operating system */
+      root.setAttribute("data-theme", shown ? "dark" : "light");
+
+      rows.forEach(function(r){ r.li.classList.toggle("now", truth && row === r); });
+
+      if (pretend && shown !== truth){
+        label.textContent = shown
+          ? "Pretend it is night. She is really asleep."
+          : "Pretend it is day. She is really wide awake.";
+      } else if (shown){
+        label.textContent = row ? "Kiks is up \u2014 " + row.doing : "Kiks is up";
+      } else {
+        label.textContent = "Kiks is asleep \u2014 up around half seven";
+      }
+
+      btn.textContent = shown ? "Let Kiks sleep" : "Wake Kiks up";
+
+      closing.innerHTML = truth
+        ? "Right now, somewhere in this house, <b>Kiks is " + (row ? row.doing : "up") + "</b>."
+        : "Right now, somewhere in this house, <b>Kiks is fast asleep</b>. She will be up around half seven.";
+
+      if (themeMeta) themeMeta.setAttribute("content", shown ? GROUND.dark : GROUND.light);
+    }
+
+    btn.addEventListener("click", function(){
+      var next = (pretend ? pretend === "dark" : reallyAwake(nowMin())) ? "light" : "dark";
+      pretend = next;
+      save(next);
+      render();
+    });
+
+    setInterval(render, 60000);
+    render();
+
+    /* the seeds */
+    var MAX = 20;
+    var pouch = document.getElementById("pouch");
+    var msg = document.getElementById("pouch-msg");
+    var feed = document.getElementById("feed");
+    var seeds = 0;
+    try { seeds = Math.max(0, Math.min(MAX, parseInt(localStorage.getItem("kiks-seeds"), 10) || 0)); } catch (e) { seeds = 0; }
+
+    function draw(animateLast){
+      pouch.textContent = "";
+      for (var i = 0; i < seeds; i++){
+        var s = document.createElement("span");
+        s.className = "seed";
+        if (!animateLast || i < seeds - 1) s.style.animation = "none";
+        pouch.appendChild(s);
+      }
+      root.style.setProperty("--stuff", (1 + (seeds / MAX) * 0.5).toFixed(3));
+
+      if (seeds === 0) msg.textContent = "Cheeks empty. She can fit about twenty.";
+      else if (seeds === 1) msg.textContent = "One seed in there. Room for plenty more.";
+      else if (seeds < MAX) msg.textContent = seeds + " seeds in there. Room for more.";
+      else msg.textContent = "Both cheeks completely full. She is off to hide them.";
+
+      feed.textContent = seeds < MAX ? "Give Kiks a seed" : "Let her unpack";
+    }
+
+    feed.addEventListener("click", function(){
+      seeds = seeds < MAX ? seeds + 1 : 0;
+      try { localStorage.setItem("kiks-seeds", String(seeds)); } catch (e) {}
+      draw(true);
+    });
+
+    draw(false);
+  })();
+</script>
+</body>
+</html>
