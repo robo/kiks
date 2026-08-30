@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Kiks Run — jump seeds, dodge rocks, and keep Kiks going through the night shift. A tiny game on Kiks the hamster's site.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F5EFE1" id="theme-color">
+<title>Kiks Run</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fredoka:wght@500;600;700&family=Lexend:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#F5EFE1;
+    --surface:#FFFAF0;
+    --ink:#322B4E;
+    --muted:#655C82;
+    --accent:#9B5E09;
+    --accent-bright:#C77B0E;
+    --accent-soft:#F6DFAE;
+    --accent2:#26766B;
+    --danger:#A32A1E;
+    --line:#9B8760;
+    --seed:#2E2740;
+    --on-bright:#20193A;
+    --shadow:rgba(50,43,78,.14);
+    --fur:#A2988A;
+    --fur-hi:#B6AC9C;
+    --fur-lo:#6B6255;
+    --fur-belly:#EFE7DB;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#161231;
+      --surface:#221C46;
+      --ink:#F3EFFF;
+      --muted:#A79FD0;
+      --accent:#FFC94A;
+      --accent-bright:#FFC94A;
+      --accent-soft:#3A2F63;
+      --accent2:#6FE3C6;
+      --danger:#FF9E90;
+      --line:#7264BC;
+      --seed:#D9CBA8;
+      --shadow:rgba(0,0,0,.5);
+      --fur:#9C9384;
+      --fur-hi:#B2A897;
+      --fur-lo:#645C50;
+      --fur-belly:#E7DFD2;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#161231;
+    --surface:#221C46;
+    --ink:#F3EFFF;
+    --muted:#A79FD0;
+    --accent:#FFC94A;
+    --accent-bright:#FFC94A;
+    --accent-soft:#3A2F63;
+    --accent2:#6FE3C6;
+    --danger:#FF9E90;
+    --line:#7264BC;
+    --seed:#D9CBA8;
+    --shadow:rgba(0,0,0,.5);
+    --fur:#9C9384;
+    --fur-hi:#B2A897;
+    --fur-lo:#645C50;
+    --fur-belly:#E7DFD2;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;scrollbar-color:var(--line) transparent}
+  img{max-width:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Lexend",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-weight:400;
+    line-height:1.6;
+    caret-color:var(--accent);
+    -webkit-font-smoothing:antialiased;
+    transition:background-color .45s ease,color .45s ease;
+  }
+  ::selection{background:var(--accent-soft);color:var(--ink)}
+
+  .page{
+    max-width:960px;
+    margin:0 auto;
+    padding:clamp(24px,5vw,56px) clamp(18px,4vw,32px) 56px;
+    display:flex;
+    flex-direction:column;
+    gap:clamp(28px,5vw,44px);
+  }
+
+  h1{font-family:"Fredoka","Trebuchet MS",sans-serif;text-wrap:balance;margin:0;line-height:1.05;
+     font-size:clamp(2.4rem,9vw,3.8rem);font-weight:700;letter-spacing:-.025em}
+  p{margin:0}
+
+  .ic{flex:none;width:20px;height:20px;stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+  .top{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+  .back{
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--accent);font-size:.95rem;font-weight:500;
+    text-decoration-thickness:2px;text-underline-offset:4px;
+    text-decoration-color:var(--accent-soft);
+  }
+  .back:hover{text-decoration-color:var(--accent)}
+  .back .ic{width:17px;height:17px;stroke:currentColor;transform:rotate(90deg)}
+  .back:focus-visible{outline:3px solid var(--accent2);outline-offset:3px;border-radius:6px}
+
+  .lede{font-size:clamp(1.05rem,2.2vw,1.2rem);max-width:46ch;color:var(--muted)}
+  .lede b{font-weight:600;color:var(--accent)}
+
+  .stage{
+    background:var(--surface);
+    border:2px solid var(--line);
+    border-radius:44px 36px 46px 34px;
+    padding:14px;
+    box-shadow:0 20px 44px -26px var(--shadow);
+    overflow:hidden;
+    transition:background-color .45s ease,border-color .45s ease;
+  }
+  #game{
+    display:block;
+    width:100%;
+    height:auto;
+    border-radius:32px 24px 34px 22px;
+    touch-action:none;
+    cursor:pointer;
+  }
+  #game:focus-visible{outline:3px solid var(--accent2);outline-offset:3px}
+
+  .hint{font-size:.92rem;color:var(--muted);text-align:center}
+  .hint kbd{
+    font-family:"DM Mono",ui-monospace,monospace;font-size:.85em;
+    background:var(--surface);border:1px solid var(--line);border-radius:5px;
+    padding:.1em .45em;color:var(--ink);
+  }
+
+  footer{
+    border-top:2px dotted var(--line);padding-top:20px;
+    font-size:.9rem;color:var(--muted);
+    display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:space-between;
+  }
+  footer a{color:var(--accent)}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+  }
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M12 4v15M5 13l7 7 7-7"/></symbol>
+</svg>
+
+<main class="page">
+
+  <div class="top">
+    <a class="back" href="index.html"><svg class="ic" aria-hidden="true"><use href="#i-back"/></svg>Back to Kiks</a>
+    <h1>Kiks Run</h1>
+    <p class="lede">The wheel got boring, so Kiks is out running the yard instead. Jump the obstacles, grab the seeds, and see how far Kiks gets before <b>bedtime</b>.</p>
+  </div>
+
+  <div class="stage">
+    <canvas id="game" width="900" height="300" tabindex="0" role="img" aria-label="Kiks Run: an endless runner. Press space, tap, or click to start and jump.">
+      Your browser does not draw canvas games. Kiks waves anyway.
+    </canvas>
+  </div>
+
+  <p class="hint">Press <kbd>Space</kbd> or tap the game to jump. Three lives, seeds earn more.</p>
+
+  <footer>
+    <span>Kiks &mdash; grey dwarf, night shift.</span>
+    <a href="index.html">Back to the burrow</a>
+  </footer>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  // ---------- Constants ----------
+  const CANVAS_WIDTH = 900;
+  const CANVAS_HEIGHT = 300;
+  const GROUND_Y = 260;
+
+  const GRAVITY = 1800;          // px/s^2
+  const JUMP_VELOCITY = -650;    // px/s
+
+  const HAMSTER_SCREEN_X = 90;
+  const HAMSTER_WIDTH = 50;
+  const HAMSTER_HEIGHT = 38;
+
+  const BASE_SPEED = 260;
+  const MAX_SPEED = 560;
+  const SPEED_GROWTH_PER_METER = 0.6;
+  const PIXELS_PER_METER = 10;
+
+  const MAX_LIVES = 3;
+  const SEEDS_PER_LIFE = 3;
+
+  const INVINCIBLE_MS = 1400;
+  const FLICKER_INTERVAL_MS = 100;
+  const POP_DURATION_MS = 250;
+
+  const SEED_Y = GROUND_Y - HAMSTER_HEIGHT * 0.55;
+  const SEED_RADIUS = 5;
+  const SEED_SPACING = 22;
+  const CLUSTER_MAX_SPAN = 4 * SEED_SPACING + SEED_RADIUS * 2;
+  const SEED_CLEAR_MARGIN = 40;
+
+  const TICK_SPACING = 40;
+
+  const STORAGE_KEY = 'kiks-run-best';
+
+  const OBSTACLE_TYPES = [
+    { name: 'rock', width: 30, height: 26, draw: drawRock },
+    { name: 'log', width: 52, height: 18, draw: drawLog },
+    { name: 'spike', width: 24, height: 42, draw: drawSpike },
+  ];
+
+  // ---------- Theme: read the site's own design tokens ----------
+  const root = document.documentElement;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function cssVar(name, fallback) {
+    const v = getComputedStyle(root).getPropertyValue(name).trim();
+    return v || fallback;
+  }
+
+  let COLORS = readColors();
+  function readColors() {
+    return {
+      bg: cssVar('--surface', '#FFFAF0'),
+      ground: cssVar('--line', '#9B8760'),
+      obstacleFill: cssVar('--ink', '#322B4E'),
+      obstacleStroke: cssVar('--line', '#9B8760'),
+      hamsterBody: cssVar('--fur', '#A2988A'),
+      hamsterOutline: cssVar('--fur-lo', '#6B6255'),
+      hamsterCheek: cssVar('--fur-belly', '#EFE7DB'),
+      seedFill: cssVar('--seed', '#2E2740'),
+      seedStroke: cssVar('--accent', '#9B5E09'),
+      hud: cssVar('--ink', '#322B4E'),
+      hudMuted: cssVar('--muted', '#655C82'),
+      livesFilled: cssVar('--accent-bright', '#C77B0E'),
+      livesEmpty: cssVar('--line', '#9B8760'),
+      overlayDim: cssVar('--surface', '#FFFAF0'),
+    };
+  }
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { COLORS = readColors(); });
+
+  // ---------- Helpers ----------
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const randomRange = (a, b) => a + Math.random() * (b - a);
+  const randomInt = (a, b) => Math.floor(randomRange(a, b + 1));
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function rectsOverlap(a, b) {
+    return a.x < b.x + b.width && a.x + a.width > b.x &&
+           a.y < b.y + b.height && a.y + a.height > b.y;
+  }
+
+  // ---------- Persistence ----------
+  function loadBestDistance() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const val = raw ? parseInt(raw, 10) : 0;
+      return Number.isFinite(val) ? val : 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  function saveBestDistance(value) {
+    try {
+      localStorage.setItem(STORAGE_KEY, String(value));
+    } catch (e) {
+      // storage unavailable (private browsing, disabled) - ignore, game keeps running
+    }
+  }
+
+  // ---------- Canvas setup ----------
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+
+  function setupCanvasDPI() {
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = CANVAS_WIDTH * dpr;
+    canvas.height = CANVAS_HEIGHT * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener('resize', setupCanvasDPI);
+  setupCanvasDPI();
+
+  // ---------- Game state ----------
+  let gameState = 'idle'; // idle | running | paused | gameover
+  let distance = 0;
+  let speed = BASE_SPEED;
+  let bestDistance = loadBestDistance();
+  let isNewRecordThisRun = false;
+  let groundScrollX = 0;
+  let obstacleSpawnTimerPx = 0;
+  let seedSpawnTimerPx = 0;
+  let obstacles = [];
+  let seeds = [];
+  let hamster = createHamster();
+
+  function createHamster() {
+    return {
+      x: HAMSTER_SCREEN_X,
+      y: GROUND_Y - HAMSTER_HEIGHT,
+      vy: 0,
+      isGrounded: true,
+      lives: 1,
+      seedProgress: 0,
+      invincible: false,
+      invincibleTimer: 0,
+      cheekPopTimer: 0,
+    };
+  }
+
+  function resetGame() {
+    hamster = createHamster();
+    obstacles = [];
+    seeds = [];
+    distance = 0;
+    speed = BASE_SPEED;
+    groundScrollX = 0;
+    obstacleSpawnTimerPx = BASE_SPEED * 1.6;
+    seedSpawnTimerPx = BASE_SPEED * 1.0;
+    isNewRecordThisRun = false;
+  }
+
+  function startGame() {
+    gameState = 'running';
+  }
+
+  function endGame() {
+    gameState = 'gameover';
+    const finalDistance = Math.floor(distance);
+    if (finalDistance > bestDistance) {
+      bestDistance = finalDistance;
+      saveBestDistance(bestDistance);
+      isNewRecordThisRun = true;
+    }
+  }
+
+  // ---------- Input ----------
+  function tryJump() {
+    if (hamster.isGrounded) {
+      hamster.vy = JUMP_VELOCITY;
+      hamster.isGrounded = false;
+    }
+  }
+
+  function handleActionInput() {
+    switch (gameState) {
+      case 'idle':
+        startGame();
+        break;
+      case 'running':
+        tryJump();
+        break;
+      case 'paused':
+        gameState = 'running';
+        break;
+      case 'gameover':
+        resetGame();
+        startGame();
+        break;
+    }
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' || e.code === 'ArrowUp') {
+      e.preventDefault();
+      handleActionInput();
+    }
+  });
+
+  canvas.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    canvas.focus();
+    handleActionInput();
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && gameState === 'running') {
+      gameState = 'paused';
+    }
+  });
+  window.addEventListener('blur', () => {
+    if (gameState === 'running') {
+      gameState = 'paused';
+    }
+  });
+
+  // ---------- Spawning ----------
+  function spawnObstacle() {
+    const type = OBSTACLE_TYPES[randomInt(0, OBSTACLE_TYPES.length - 1)];
+    obstacles.push({
+      type,
+      x: CANVAS_WIDTH,
+      y: GROUND_Y - type.height,
+      width: type.width,
+      height: type.height,
+      hit: false,
+    });
+
+    const speedFraction = clamp((speed - BASE_SPEED) / (MAX_SPEED - BASE_SPEED), 0, 1);
+    const minGapTimeSec = lerp(1.3, 0.75, speedFraction);
+    const gapTimeSec = minGapTimeSec * randomRange(1.0, 1.4);
+    obstacleSpawnTimerPx = speed * gapTimeSec;
+  }
+
+  function seedZoneClear() {
+    return !obstacles.some((o) => o.x > CANVAS_WIDTH - CLUSTER_MAX_SPAN - SEED_CLEAR_MARGIN);
+  }
+
+  function spawnSeedClusterIfEligible() {
+    if (!seedZoneClear()) {
+      seedSpawnTimerPx = speed * 0.1; // retry again shortly
+      return;
+    }
+    if (Math.random() < 0.6) {
+      const n = randomInt(3, 5);
+      for (let i = 0; i < n; i++) {
+        seeds.push({
+          x: CANVAS_WIDTH + i * SEED_SPACING,
+          y: SEED_Y,
+          radius: SEED_RADIUS,
+          collected: false,
+        });
+      }
+    }
+    seedSpawnTimerPx = speed * randomRange(1.8, 2.6);
+  }
+
+  // ---------- Collision / collection ----------
+  function hamsterHitbox() {
+    return {
+      x: hamster.x + 6,
+      y: hamster.y + 4,
+      width: HAMSTER_WIDTH - 12,
+      height: HAMSTER_HEIGHT - 6,
+    };
+  }
+
+  function hitObstacle() {
+    hamster.lives -= 1;
+    if (hamster.lives <= 0) {
+      endGame();
+    } else {
+      hamster.invincible = true;
+      hamster.invincibleTimer = INVINCIBLE_MS;
+    }
+  }
+
+  function collectSeed(seed) {
+    seed.collected = true;
+    hamster.seedProgress += 1;
+    if (hamster.seedProgress >= SEEDS_PER_LIFE) {
+      hamster.seedProgress = 0;
+      hamster.cheekPopTimer = POP_DURATION_MS;
+      if (hamster.lives < MAX_LIVES) {
+        hamster.lives += 1;
+      }
+    }
+  }
+
+  // ---------- Update ----------
+  function update(dt) {
+    // difficulty
+    speed = Math.min(MAX_SPEED, BASE_SPEED + distance * SPEED_GROWTH_PER_METER);
+    distance += (speed * dt) / PIXELS_PER_METER;
+    groundScrollX = (groundScrollX + speed * dt) % TICK_SPACING;
+
+    // spawn timers
+    obstacleSpawnTimerPx -= speed * dt;
+    if (obstacleSpawnTimerPx <= 0) spawnObstacle();
+
+    seedSpawnTimerPx -= speed * dt;
+    if (seedSpawnTimerPx <= 0) spawnSeedClusterIfEligible();
+
+    // move & cull obstacles
+    for (const o of obstacles) o.x -= speed * dt;
+    obstacles = obstacles.filter((o) => o.x + o.width > 0);
+
+    // move & cull seeds
+    for (const s of seeds) s.x -= speed * dt;
+    seeds = seeds.filter((s) => !s.collected && s.x + s.radius > 0);
+
+    // hamster physics
+    hamster.vy += GRAVITY * dt;
+    hamster.y += hamster.vy * dt;
+    const groundedY = GROUND_Y - HAMSTER_HEIGHT;
+    if (hamster.y >= groundedY) {
+      hamster.y = groundedY;
+      hamster.vy = 0;
+      hamster.isGrounded = true;
+    }
+
+    // timers
+    if (hamster.invincible) {
+      hamster.invincibleTimer -= dt * 1000;
+      if (hamster.invincibleTimer <= 0) {
+        hamster.invincible = false;
+        hamster.invincibleTimer = 0;
+      }
+    }
+    if (hamster.cheekPopTimer > 0) {
+      hamster.cheekPopTimer = Math.max(0, hamster.cheekPopTimer - dt * 1000);
+    }
+
+    // collisions
+    const hitbox = hamsterHitbox();
+    for (const o of obstacles) {
+      if (o.hit) continue;
+      const obox = { x: o.x + 3, y: o.y + 2, width: o.width - 6, height: o.height - 2 };
+      if (rectsOverlap(hitbox, obox)) {
+        o.hit = true;
+        if (!hamster.invincible) {
+          hitObstacle();
+        }
+      }
+    }
+
+    for (const s of seeds) {
+      if (s.collected) continue;
+      const sbox = { x: s.x - s.radius, y: s.y - s.radius, width: s.radius * 2, height: s.radius * 2 };
+      if (rectsOverlap(hitbox, sbox)) {
+        collectSeed(s);
+      }
+    }
+  }
+
+  // ---------- Drawing: obstacles ----------
+  function drawRock(ctx, obs) {
+    ctx.fillStyle = COLORS.obstacleFill;
+    ctx.strokeStyle = COLORS.obstacleStroke;
+    ctx.lineWidth = 2;
+    const parts = [
+      [obs.x + obs.width * 0.28, obs.y + obs.height * 0.68, obs.height * 0.48],
+      [obs.x + obs.width * 0.60, obs.y + obs.height * 0.55, obs.height * 0.55],
+      [obs.x + obs.width * 0.85, obs.y + obs.height * 0.72, obs.height * 0.38],
+    ];
+    for (const [cx, cy, r] of parts) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+  }
+
+  function drawLog(ctx, obs) {
+    ctx.fillStyle = COLORS.obstacleFill;
+    ctx.strokeStyle = COLORS.obstacleStroke;
+    ctx.lineWidth = 2;
+    roundRect(ctx, obs.x, obs.y, obs.width, obs.height, 4);
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    for (let i = 1; i < 4; i++) {
+      const lx = obs.x + (obs.width / 4) * i;
+      ctx.moveTo(lx, obs.y + 2);
+      ctx.lineTo(lx, obs.y + obs.height - 2);
+    }
+    ctx.strokeStyle = COLORS.bg;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+
+  function drawSpike(ctx, obs) {
+    ctx.fillStyle = COLORS.obstacleFill;
+    ctx.strokeStyle = COLORS.obstacleStroke;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(obs.x, obs.y + obs.height);
+    ctx.lineTo(obs.x + obs.width / 2, obs.y);
+    ctx.lineTo(obs.x + obs.width, obs.y + obs.height);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  // ---------- Drawing: seeds ----------
+  function drawSeed(ctx, seed) {
+    ctx.fillStyle = COLORS.seedFill;
+    ctx.strokeStyle = COLORS.seedStroke;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(seed.x, seed.y, seed.radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.beginPath();
+    ctx.arc(seed.x - seed.radius * 0.35, seed.y - seed.radius * 0.35, seed.radius * 0.3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // ---------- Drawing: hamster ----------
+  function cheekRadiusForStage(stage) {
+    return [3, 6, 9][stage] || 3;
+  }
+
+  function cheekPopScale() {
+    if (hamster.cheekPopTimer <= 0) return 1;
+    const t = hamster.cheekPopTimer / POP_DURATION_MS;
+    return 1 + 0.4 * t;
+  }
+
+  function drawHamster(ctx, h) {
+    const x = h.x, y = h.y, w = HAMSTER_WIDTH, ht = HAMSTER_HEIGHT;
+
+    const bodyCX = x + w * 0.42, bodyCY = y + ht * 0.6, bodyRX = 20, bodyRY = 13;
+    const headCX = x + w * 0.78, headCY = y + ht * 0.35, headR = 12;
+    const tailCX = x + w * 0.06, tailCY = y + ht * 0.55;
+
+    ctx.fillStyle = COLORS.hamsterBody;
+    ctx.strokeStyle = COLORS.hamsterOutline;
+    ctx.lineWidth = 2;
+
+    // tail
+    ctx.beginPath();
+    ctx.ellipse(tailCX, tailCY, 7, 4.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // legs
+    const legW = 5, legH = 10;
+    const bodyBottom = bodyCY + bodyRY * 0.6;
+    if (h.isGrounded) {
+      const swing = Math.sin(distance * 0.6) * 4;
+      ctx.fillStyle = COLORS.hamsterOutline;
+      ctx.fillRect(x + w * 0.32 + swing, bodyBottom, legW, legH);
+      ctx.fillRect(x + w * 0.58 - swing, bodyBottom, legW, legH);
+    } else {
+      ctx.fillStyle = COLORS.hamsterOutline;
+      ctx.fillRect(x + w * 0.36, bodyBottom, legW, legH * 0.6);
+      ctx.fillRect(x + w * 0.54, bodyBottom, legW, legH * 0.6);
+    }
+
+    // body
+    ctx.fillStyle = COLORS.hamsterBody;
+    ctx.beginPath();
+    ctx.ellipse(bodyCX, bodyCY, bodyRX, bodyRY, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // cheek (chipmunk-style bulge, size driven by seed progress)
+    const stage = h.seedProgress;
+    const cheekR = cheekRadiusForStage(stage) * cheekPopScale();
+    if (cheekR > 0.5) {
+      ctx.fillStyle = COLORS.hamsterCheek;
+      ctx.strokeStyle = COLORS.hamsterOutline;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(headCX + headR * 0.35, headCY + headR * 0.55, cheekR, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    // head
+    ctx.fillStyle = COLORS.hamsterBody;
+    ctx.strokeStyle = COLORS.hamsterOutline;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(headCX, headCY, headR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // ears
+    ctx.beginPath();
+    ctx.arc(headCX - 6, headCY - headR + 2, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(headCX + 4, headCY - headR + 1, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // eye
+    ctx.fillStyle = COLORS.hud;
+    ctx.beginPath();
+    ctx.arc(headCX + 5, headCY - 1, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function shouldDrawHamsterThisFrame() {
+    if (!hamster.invincible) return true;
+    if (reduceMotion) return true; // no strobing; drawn at reduced opacity instead
+    return Math.floor(hamster.invincibleTimer / FLICKER_INTERVAL_MS) % 2 === 0;
+  }
+
+  // ---------- Drawing: scene ----------
+  function drawGround() {
+    ctx.strokeStyle = COLORS.ground;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, GROUND_Y);
+    ctx.lineTo(CANVAS_WIDTH, GROUND_Y);
+    ctx.stroke();
+
+    ctx.lineWidth = 2;
+    for (let tx = -groundScrollX; tx < CANVAS_WIDTH; tx += TICK_SPACING) {
+      ctx.beginPath();
+      ctx.moveTo(tx, GROUND_Y + 4);
+      ctx.lineTo(tx + 10, GROUND_Y + 4);
+      ctx.stroke();
+    }
+  }
+
+  function drawLivesIndicator() {
+    for (let i = 0; i < MAX_LIVES; i++) {
+      const cx = 26 + i * 22, cy = 22, r = 7;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      if (i < hamster.lives) {
+        ctx.fillStyle = COLORS.livesFilled;
+        ctx.fill();
+        ctx.strokeStyle = COLORS.hamsterOutline;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      } else {
+        ctx.strokeStyle = COLORS.livesEmpty;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+  }
+
+  function drawHUDText() {
+    ctx.textAlign = 'right';
+    ctx.fillStyle = COLORS.hud;
+    ctx.font = '600 16px "DM Mono", ui-monospace, monospace';
+    ctx.fillText(`${Math.floor(distance)}m`, CANVAS_WIDTH - 20, 26);
+    ctx.font = '12px "DM Mono", ui-monospace, monospace';
+    ctx.fillStyle = COLORS.hudMuted;
+    ctx.fillText(`BEST ${bestDistance}m`, CANVAS_WIDTH - 20, 44);
+    ctx.textAlign = 'left';
+  }
+
+  function drawCenteredLines(lines, startY, dim) {
+    if (dim) {
+      ctx.fillStyle = COLORS.overlayDim;
+      ctx.globalAlpha = 0.9;
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      ctx.globalAlpha = 1;
+    }
+    ctx.textAlign = 'center';
+    let y = startY;
+    for (const line of lines) {
+      ctx.font = line.font || '20px "Lexend", sans-serif';
+      ctx.fillStyle = line.color || COLORS.hud;
+      ctx.fillText(line.text, CANVAS_WIDTH / 2, y);
+      y += line.gap || 26;
+    }
+    ctx.textAlign = 'left';
+  }
+
+  function drawOverlay() {
+    if (gameState === 'idle') {
+      drawCenteredLines(
+        [
+          { text: 'KIKS RUN', font: '700 30px "Fredoka", sans-serif', gap: 34 },
+          { text: 'Press Space / Tap to Start', font: '16px "Lexend", sans-serif', gap: 24 },
+          { text: `Best: ${bestDistance}m`, font: '14px "DM Mono", monospace', color: COLORS.hudMuted },
+        ],
+        90,
+        false
+      );
+    } else if (gameState === 'paused') {
+      drawCenteredLines(
+        [
+          { text: 'PAUSED', font: '700 26px "Fredoka", sans-serif', gap: 28 },
+          { text: 'Press Space / Tap to Resume', font: '16px "Lexend", sans-serif' },
+        ],
+        120,
+        true
+      );
+    } else if (gameState === 'gameover') {
+      const lines = [
+        { text: 'GAME OVER', font: '700 28px "Fredoka", sans-serif', gap: 34 },
+        { text: `Distance: ${Math.floor(distance)}m`, font: '16px "Lexend", sans-serif', gap: 24 },
+        { text: `Best: ${bestDistance}m`, font: '14px "DM Mono", monospace', color: isNewRecordThisRun ? COLORS.livesFilled : COLORS.hudMuted, gap: 22 },
+      ];
+      if (isNewRecordThisRun) {
+        lines.push({ text: 'NEW RECORD!', font: '600 14px "Fredoka", sans-serif', color: COLORS.livesFilled, gap: 22 });
+      }
+      lines.push({ text: 'Press Space / Tap to Restart', font: '14px "Lexend", sans-serif', color: COLORS.hudMuted });
+      drawCenteredLines(lines, 90, true);
+    }
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    ctx.fillStyle = COLORS.bg;
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    drawGround();
+
+    for (const o of obstacles) o.type.draw(ctx, o);
+    for (const s of seeds) drawSeed(ctx, s);
+
+    ctx.globalAlpha = (hamster.invincible && reduceMotion) ? 0.5 : 1;
+    if (shouldDrawHamsterThisFrame()) {
+      drawHamster(ctx, hamster);
+    }
+    ctx.globalAlpha = 1;
+
+    drawLivesIndicator();
+    drawHUDText();
+    drawOverlay();
+  }
+
+  // ---------- Main loop ----------
+  let lastTimestamp = null;
+  function loop(timestamp) {
+    if (lastTimestamp === null) lastTimestamp = timestamp;
+    let dt = (timestamp - lastTimestamp) / 1000;
+    lastTimestamp = timestamp;
+    dt = Math.min(dt, 0.05);
+
+    if (gameState === 'running') update(dt);
+    render();
+
+    requestAnimationFrame(loop);
+  }
+
+  resetGame();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
