@@ -176,6 +176,27 @@
   .link .ic{width:17px;height:17px;stroke:currentColor}
   :is(.toggle,.seed-btn,.link):focus-visible{outline:3px solid var(--accent2);outline-offset:3px;border-radius:6px}
 
+  /* ---------- language switcher ---------- */
+  .lang-switch{
+    align-self:flex-end;
+    display:inline-flex;gap:4px;
+    padding:4px;
+    border:2px solid var(--line);
+    border-radius:999px;
+    background:var(--surface);
+    transition:background-color .45s ease,border-color .45s ease;
+  }
+  .lang-btn{
+    font-family:"DM Mono",ui-monospace,monospace;
+    font-size:.78rem;font-weight:500;letter-spacing:.02em;
+    color:var(--muted);background:transparent;border:none;cursor:pointer;
+    padding:6px 13px;border-radius:999px;line-height:1.2;
+    transition:background-color .25s ease,color .25s ease;
+  }
+  .lang-btn:hover{color:var(--ink)}
+  .lang-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+  .lang-btn:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
+
   /* ---------- the stage: hamster + feeder together ---------- */
   .stage{
     background:var(--surface);
@@ -336,22 +357,27 @@
 
 <main class="page">
 
+  <div class="lang-switch" role="group" aria-label="Language / Sprog">
+    <button class="lang-btn" id="lang-en" type="button" data-lang="en" aria-pressed="true">EN</button>
+    <button class="lang-btn" id="lang-da" type="button" data-lang="da" aria-pressed="false">DA</button>
+  </div>
+
   <header class="hero">
     <div class="hero-copy">
       <h1>Kiks</h1>
-      <p class="lede">A very small grey dwarf hamster with a <b>very big</b> night job: running, digging, and moving every seed in the house to a better spot.</p>
-      <p class="byline">Kept, fed and written about by <strong>Zoya</strong>.</p>
+      <p class="lede" data-i18n-html="lede">A very small grey dwarf hamster with a <b>very big</b> night job: running, digging, and moving every seed in the house to a better spot.</p>
+      <p class="byline" data-i18n-html="byline">Kept, fed and written about by <strong>Zoya</strong>.</p>
       <p class="status"><span class="dot" aria-hidden="true"></span><span id="status-text" aria-live="polite">Kiks is asleep</span></p>
       <div class="hero-actions">
         <button class="toggle" id="toggle" type="button">Wake Kiks up</button>
-        <a class="link" href="#snacks">Feeding him? Rules are here <svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></a>
-        <a class="link" href="game.html">Play Kiks Run <svg class="ic" aria-hidden="true"><use href="#i-play"/></svg></a>
+        <a class="link" href="#snacks"><span data-i18n="rulesLink">Feeding him? Rules are here</span> <svg class="ic" aria-hidden="true"><use href="#i-down"/></svg></a>
+        <a class="link" href="game.html"><span data-i18n="playLink">Play Kiks Run</span> <svg class="ic" aria-hidden="true"><use href="#i-play"/></svg></a>
       </div>
     </div>
 
     <div class="stage">
       <svg class="scene" viewBox="0 0 400 320" role="img" aria-labelledby="art-title">
-        <title id="art-title">Kiks the grey dwarf hamster in his wheel</title>
+        <title id="art-title" data-i18n="sceneTitle">Kiks the grey dwarf hamster in his wheel</title>
 
         <g class="zzz" aria-hidden="true" font-size="26">
           <text x="300" y="86">z</text>
@@ -400,81 +426,81 @@
 
   <section class="sec" id="numbers" aria-labelledby="numbers-h">
     <div class="sec-head">
-      <h2 id="numbers-h">Kiks by the numbers</h2>
-      <p>Nobody has actually weighed him. These are good guesses for a hamster his size.</p>
+      <h2 id="numbers-h" data-i18n="numbersH2">Kiks by the numbers</h2>
+      <p data-i18n="numbersP">Nobody has actually weighed him. These are good guesses for a hamster his size.</p>
     </div>
     <ul class="figures" role="list">
-      <li><span class="fig">45 g</span><span>about as heavy as a satsuma</span></li>
-      <li><span class="fig">8 km</span><span>on the wheel in one night</span></li>
-      <li><span class="fig">20</span><span>sunflower seeds, carried in his cheeks, all at once</span></li>
-      <li><span class="fig">6 am</span><span>bedtime, give or take</span></li>
+      <li><span class="fig" data-i18n="fig1Value">45 g</span><span data-i18n="fig1Label">about as heavy as a satsuma</span></li>
+      <li><span class="fig" data-i18n="fig2Value">8 km</span><span data-i18n="fig2Label">on the wheel in one night</span></li>
+      <li><span class="fig" data-i18n="fig3Value">20</span><span data-i18n="fig3Label">sunflower seeds, carried in his cheeks, all at once</span></li>
+      <li><span class="fig" data-i18n="fig4Value">6 am</span><span data-i18n="fig4Label">bedtime, give or take</span></li>
     </ul>
   </section>
 
   <section class="sec" id="night" aria-labelledby="night-h">
     <div class="sec-head">
-      <h2 id="night-h">The night shift</h2>
-      <p>Kiks sleeps all day and works all night. This is roughly what happens while everyone else is in bed.</p>
+      <h2 id="night-h" data-i18n="nightH2">The night shift</h2>
+      <p data-i18n="nightP">Kiks sleeps all day and works all night. This is roughly what happens while everyone else is in bed.</p>
     </div>
     <ol class="shift" id="shift">
-      <li data-doing="stretching"><time datetime="19:30">7:30 pm</time><span>Wakes up. Enormous stretch. Sits still for a while thinking about it.</span></li>
-      <li data-doing="on the wheel"><time datetime="20:00">8:00 pm</time><span>First lap on the wheel. Then two hundred more.</span></li>
-      <li data-doing="raiding the snacks"><time datetime="21:15">9:15 pm</time><span>Snack raid &mdash; seeds go in the cheeks, cheeks go back to bed.</span></li>
-      <li data-doing="rearranging the house"><time datetime="23:00">11:00 pm</time><span>Rearranges the entire house. The bedding was in the wrong corner.</span></li>
-      <li data-doing="digging, seriously"><time datetime="02:00">2:00 am</time><span>Serious digging. No one knows what he is looking for.</span></li>
-      <li data-doing="on snack number twelve"><time datetime="04:30">4:30 am</time><span>Twelfth snack of the night.</span></li>
-      <li data-doing="going to bed"><time datetime="06:00">6:00 am</time><span>Back to bed. Do not disturb.</span></li>
+      <li data-doing="stretch"><time datetime="19:30" data-en="7:30 pm" data-da="19:30">7:30 pm</time><span data-i18n="shiftDesc1">Wakes up. Enormous stretch. Sits still for a while thinking about it.</span></li>
+      <li data-doing="wheel"><time datetime="20:00" data-en="8:00 pm" data-da="20:00">8:00 pm</time><span data-i18n="shiftDesc2">First lap on the wheel. Then two hundred more.</span></li>
+      <li data-doing="raid"><time datetime="21:15" data-en="9:15 pm" data-da="21:15">9:15 pm</time><span data-i18n="shiftDesc3">Snack raid &mdash; seeds go in the cheeks, cheeks go back to bed.</span></li>
+      <li data-doing="rearrange"><time datetime="23:00" data-en="11:00 pm" data-da="23:00">11:00 pm</time><span data-i18n="shiftDesc4">Rearranges the entire house. The bedding was in the wrong corner.</span></li>
+      <li data-doing="dig"><time datetime="02:00" data-en="2:00 am" data-da="02:00">2:00 am</time><span data-i18n="shiftDesc5">Serious digging. No one knows what he is looking for.</span></li>
+      <li data-doing="snack12"><time datetime="04:30" data-en="4:30 am" data-da="04:30">4:30 am</time><span data-i18n="shiftDesc6">Twelfth snack of the night.</span></li>
+      <li data-doing="bed"><time datetime="06:00" data-en="6:00 am" data-da="06:00">6:00 am</time><span data-i18n="shiftDesc7">Back to bed. Do not disturb.</span></li>
     </ol>
   </section>
 
   <section class="sec" id="snacks" aria-labelledby="snacks-h">
     <div class="sec-head">
-      <h2 id="snacks-h">The snack menu</h2>
-      <p>Tiny hamster, tiny portions &mdash; a piece the size of your fingernail is a whole meal for Kiks.</p>
+      <h2 id="snacks-h" data-i18n="snacksH2">The snack menu</h2>
+      <p data-i18n="snacksP">Tiny hamster, tiny portions &mdash; a piece the size of your fingernail is a whole meal for Kiks.</p>
     </div>
     <div class="menu">
       <div class="card yes">
-        <h3>Yes please</h3>
+        <h3 data-i18n="yesH3">Yes please</h3>
         <ul role="list">
-          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Sunflower seeds &mdash; the absolute favourite</span></li>
-          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>A sliver of cucumber</span></li>
-          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Plain oats</span></li>
-          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>A little broccoli or carrot</span></li>
-          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>One mealworm, as a treat</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="yesLi1">Sunflower seeds &mdash; the absolute favourite</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="yesLi2">A sliver of cucumber</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="yesLi3">Plain oats</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="yesLi4">A little broccoli or carrot</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="yesLi5">One mealworm, as a treat</span></li>
         </ul>
       </div>
       <div class="card no">
-        <h3>Never ever</h3>
+        <h3 data-i18n="noH3">Never ever</h3>
         <ul role="list">
-          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span>Chocolate and sweets</span></li>
-          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span>Oranges, lemons, anything citrus</span></li>
-          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span>Onion and garlic</span></li>
-          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span>Almonds</span></li>
-          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span>Anything salty or from a packet</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="noLi1">Chocolate and sweets</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="noLi2">Oranges, lemons, anything citrus</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="noLi3">Onion and garlic</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="noLi4">Almonds</span></li>
+          <li><svg class="ic" aria-hidden="true"><use href="#i-cross"/></svg><span data-i18n="noLi5">Anything salty or from a packet</span></li>
         </ul>
-        <p class="note">These can make him very ill. If you are not sure about a food, ask a grown-up before giving it to him.</p>
+        <p class="note" data-i18n="note">These can make him very ill. If you are not sure about a food, ask a grown-up before giving it to him.</p>
       </div>
     </div>
   </section>
 
   <section class="sec" id="rules" aria-labelledby="rules-h">
     <div class="sec-head">
-      <h2 id="rules-h">House rules</h2>
-      <p>Kiks is smaller than a phone and braver than he looks. This is how to be his favourite person.</p>
+      <h2 id="rules-h" data-i18n="rulesH2">House rules</h2>
+      <p data-i18n="rulesP">Kiks is smaller than a phone and braver than he looks. This is how to be his favourite person.</p>
     </div>
     <ul class="rules" role="list">
-      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Scoop him up with two flat hands, low over his bed.</span></li>
-      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Never grab a sleeping hamster &mdash; say hello first and let him wake up.</span></li>
-      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Fresh water every single day, no days off.</span></li>
-      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Quiet voices near the cage. His ears are enormous.</span></li>
-      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Wash your hands before, so you do not smell like snacks.</span></li>
-      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span>Dwarf hamsters live about two years. Make them good ones.</span></li>
+      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="ruleLi1">Scoop him up with two flat hands, low over his bed.</span></li>
+      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="ruleLi2">Never grab a sleeping hamster &mdash; say hello first and let him wake up.</span></li>
+      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="ruleLi3">Fresh water every single day, no days off.</span></li>
+      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="ruleLi4">Quiet voices near the cage. His ears are enormous.</span></li>
+      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="ruleLi5">Wash your hands before, so you do not smell like snacks.</span></li>
+      <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="ruleLi6">Dwarf hamsters live about two years. Make them good ones.</span></li>
     </ul>
   </section>
 
   <p class="closing" id="closing">Right now, somewhere in this house, <b>Kiks is asleep</b>.</p>
 
-  <footer>Kiks &mdash; grey dwarf, night shift.</footer>
+  <footer data-i18n="footerText">Kiks &mdash; grey dwarf, night shift.</footer>
 </main>
 
 <script>
@@ -484,10 +510,209 @@
     var label = document.getElementById("status-text");
     var closing = document.getElementById("closing");
     var themeMeta = document.getElementById("theme-color");
+    var langBtns = { en: document.getElementById("lang-en"), da: document.getElementById("lang-da") };
+    var titleEl = document.querySelector("title");
+    var descMeta = document.querySelector('meta[name="description"]');
 
     var WAKE = 19 * 60 + 30;   /* 7:30 pm */
     var SLEEP = 6 * 60;        /* 6:00 am */
     var GROUND = { light: "#F5EFE1", dark: "#161231" };
+
+    /* ---------- language ---------- */
+    var LANG_KEY = "kiks-lang";
+    function savedLang(){ try { return localStorage.getItem(LANG_KEY); } catch (e) { return null; } }
+    function saveLang(v){ try { localStorage.setItem(LANG_KEY, v); } catch (e) {} }
+    var lang = savedLang();
+    if (lang !== "en" && lang !== "da") lang = "en";
+
+    var T = {
+      en: {
+        metaTitle: "Kiks the Hamster",
+        metaDescription: "Kiks is Zoya's grey dwarf hamster. His night-shift timetable, his snack menu, and the rules for holding him.",
+        sceneTitle: "Kiks the grey dwarf hamster in his wheel",
+        lede: 'A very small grey dwarf hamster with a <b>very big</b> night job: running, digging, and moving every seed in the house to a better spot.',
+        byline: 'Kept, fed and written about by <strong>Zoya</strong>.',
+        kiksAsleep: "Kiks is asleep",
+        kiksAsleepDetail: "Kiks is asleep — up around half seven",
+        kiksUpPrefix: "Kiks is up",
+        pretendDark: "Pretend it is night. He is really asleep.",
+        pretendLight: "Pretend it is day. He is really wide awake.",
+        wakeBtn: "Wake Kiks up",
+        sleepBtn: "Let Kiks sleep",
+        rulesLink: "Feeding him? Rules are here",
+        playLink: "Play Kiks Run",
+        feedBtn: "Give Kiks a seed",
+        unpackBtn: "Let him unpack",
+        pouchEmpty: "Cheeks empty. He can fit about twenty.",
+        pouchOne: "One seed in there. Room for plenty more.",
+        pouchMany: function (n) { return n + " seeds in there. Room for more."; },
+        pouchFull: "Both cheeks completely full. He is off to hide them.",
+        numbersH2: "Kiks by the numbers",
+        numbersP: "Nobody has actually weighed him. These are good guesses for a hamster his size.",
+        fig1Value: "45 g", fig1Label: "about as heavy as a satsuma",
+        fig2Value: "8 km", fig2Label: "on the wheel in one night",
+        fig3Value: "20", fig3Label: "sunflower seeds, carried in his cheeks, all at once",
+        fig4Value: "6 am", fig4Label: "bedtime, give or take",
+        nightH2: "The night shift",
+        nightP: "Kiks sleeps all day and works all night. This is roughly what happens while everyone else is in bed.",
+        shiftDesc1: "Wakes up. Enormous stretch. Sits still for a while thinking about it.",
+        shiftDesc2: "First lap on the wheel. Then two hundred more.",
+        shiftDesc3: "Snack raid — seeds go in the cheeks, cheeks go back to bed.",
+        shiftDesc4: "Rearranges the entire house. The bedding was in the wrong corner.",
+        shiftDesc5: "Serious digging. No one knows what he is looking for.",
+        shiftDesc6: "Twelfth snack of the night.",
+        shiftDesc7: "Back to bed. Do not disturb.",
+        snacksH2: "The snack menu",
+        snacksP: "Tiny hamster, tiny portions — a piece the size of your fingernail is a whole meal for Kiks.",
+        yesH3: "Yes please",
+        yesLi1: "Sunflower seeds — the absolute favourite",
+        yesLi2: "A sliver of cucumber",
+        yesLi3: "Plain oats",
+        yesLi4: "A little broccoli or carrot",
+        yesLi5: "One mealworm, as a treat",
+        noH3: "Never ever",
+        noLi1: "Chocolate and sweets",
+        noLi2: "Oranges, lemons, anything citrus",
+        noLi3: "Onion and garlic",
+        noLi4: "Almonds",
+        noLi5: "Anything salty or from a packet",
+        note: "These can make him very ill. If you are not sure about a food, ask a grown-up before giving it to him.",
+        rulesH2: "House rules",
+        rulesP: "Kiks is smaller than a phone and braver than he looks. This is how to be his favourite person.",
+        ruleLi1: "Scoop him up with two flat hands, low over his bed.",
+        ruleLi2: "Never grab a sleeping hamster — say hello first and let him wake up.",
+        ruleLi3: "Fresh water every single day, no days off.",
+        ruleLi4: "Quiet voices near the cage. His ears are enormous.",
+        ruleLi5: "Wash your hands before, so you do not smell like snacks.",
+        ruleLi6: "Dwarf hamsters live about two years. Make them good ones.",
+        footerText: "Kiks — grey dwarf, night shift.",
+        closingLeadIn: "Right now, somewhere in this house, ",
+        closingUpNoRow: "Kiks is up",
+        closingAsleepBold: "Kiks is fast asleep",
+        closingAsleepRest: ". He will be up around half seven.",
+        doing: {
+          stretch: "stretching",
+          wheel: "on the wheel",
+          raid: "raiding the snacks",
+          rearrange: "rearranging the house",
+          dig: "digging, seriously",
+          snack12: "on snack number twelve",
+          bed: "going to bed"
+        },
+        closingFor: function (key) { return "Kiks is " + this.doing[key].closing; }
+      },
+      da: {
+        metaTitle: "Hamsteren Kiks",
+        metaDescription: "Kiks er Zoyas grå dværghamster. Hans natteskema, hans snackmenu og reglerne for at holde ham.",
+        sceneTitle: "Kiks, den grå dværghamster, i sit hjul",
+        lede: 'En meget lille grå dværghamster med et <b>meget stort</b> natjob: at løbe, grave og flytte hvert eneste frø i huset hen til et bedre sted.',
+        byline: 'Passet, fodret og skrevet om af <strong>Zoya</strong>.',
+        kiksAsleep: "Kiks sover",
+        kiksAsleepDetail: "Kiks sover — oppe omkring halv otte",
+        kiksUpPrefix: "Kiks er oppe",
+        pretendDark: "Lad som om det er nat. Han sover faktisk.",
+        pretendLight: "Lad som om det er dag. Han er faktisk lysvågen.",
+        wakeBtn: "Væk Kiks",
+        sleepBtn: "Lad Kiks sove",
+        rulesLink: "Skal han fodres? Reglerne er her",
+        playLink: "Spil Kiks Run",
+        feedBtn: "Giv Kiks et frø",
+        unpackBtn: "Lad ham pakke ud",
+        pouchEmpty: "Tomme kinder. Han kan have omkring tyve i dem.",
+        pouchOne: "Ét frø deri. Plads til mange flere.",
+        pouchMany: function (n) { return n + " frø deri. Plads til flere."; },
+        pouchFull: "Begge kinder er stopfulde. Han er på vej for at gemme dem.",
+        numbersH2: "Kiks i tal",
+        numbersP: "Ingen har faktisk vejet ham. Det her er gode gæt for en hamster på hans størrelse.",
+        fig1Value: "45 g", fig1Label: "omtrent så tung som en klementin",
+        fig2Value: "8 km", fig2Label: "på hjulet på én nat",
+        fig3Value: "20", fig3Label: "solsikkefrø, som han kan have i kinderne på én gang",
+        fig4Value: "kl. 6", fig4Label: "sengetid, cirka",
+        nightH2: "Natholdet",
+        nightP: "Kiks sover hele dagen og arbejder hele natten. Sådan cirka foregår det, mens alle andre sover.",
+        shiftDesc1: "Vågner. Kæmpe strækkøvelse. Sidder stille et stykke tid og tænker over det.",
+        shiftDesc2: "Første omgang på hjulet. Så to hundrede mere.",
+        shiftDesc3: "Snackrazzia — frøene ryger i kinderne, kinderne ryger tilbage i seng.",
+        shiftDesc4: "Omorganiserer hele huset. Strøelsen lå i det forkerte hjørne.",
+        shiftDesc5: "Seriøst gravearbejde. Ingen ved, hvad han leder efter.",
+        shiftDesc6: "Nattens tolvte snack.",
+        shiftDesc7: "Tilbage i seng. Må ikke forstyrres.",
+        snacksH2: "Snackmenuen",
+        snacksP: "Lille hamster, små portioner — et stykke på størrelse med din negl er et helt måltid for Kiks.",
+        yesH3: "Ja tak",
+        yesLi1: "Solsikkefrø — den absolutte favorit",
+        yesLi2: "En tynd skive agurk",
+        yesLi3: "Almindelig havregryn",
+        yesLi4: "Lidt broccoli eller gulerod",
+        yesLi5: "Én melorm, som en godbid",
+        noH3: "Aldrig nogensinde",
+        noLi1: "Chokolade og slik",
+        noLi2: "Appelsiner, citroner, alt med citrus",
+        noLi3: "Løg og hvidløg",
+        noLi4: "Mandler",
+        noLi5: "Alt salt eller fra en pose",
+        note: "Det kan gøre ham meget syg. Er du i tvivl om en fødevare, så spørg en voksen, før du giver ham den.",
+        rulesH2: "Husregler",
+        rulesP: "Kiks er mindre end en telefon og modigere, end han ser ud til. Sådan bliver du hans yndlingsperson.",
+        ruleLi1: "Løft ham op med to flade hænder, tæt over hans bund.",
+        ruleLi2: "Grib aldrig fat i en sovende hamster — sig hej først, og lad ham vågne op.",
+        ruleLi3: "Frisk vand hver eneste dag, ingen fridage.",
+        ruleLi4: "Stille stemmer tæt på buret. Hans ører er kæmpestore.",
+        ruleLi5: "Vask dine hænder først, så du ikke lugter af snacks.",
+        ruleLi6: "Dværghamstere lever cirka to år. Gør dem gode.",
+        footerText: "Kiks — grå dværg, natholdet.",
+        closingLeadIn: "Lige nu, et sted i huset, ",
+        closingUpNoRow: "er Kiks oppe",
+        closingAsleepBold: "sover Kiks allerede tungt",
+        closingAsleepRest: ". Han er oppe igen omkring halv otte.",
+        doing: {
+          stretch: { status: "i gang med at strække sig", closing: "strækker sig" },
+          wheel: { status: "på hjulet", closing: "er på hjulet" },
+          raid: { status: "på snackrazzia", closing: "er på snackrazzia" },
+          rearrange: { status: "i gang med at ordne huset", closing: "er i gang med at ordne huset" },
+          dig: { status: "i gang med at grave for alvor", closing: "graver for alvor" },
+          snack12: { status: "i gang med nattens tolvte snack", closing: "er i gang med nattens tolvte snack" },
+          bed: { status: "på vej i seng", closing: "er på vej i seng" }
+        },
+        closingFor: function (key) { return "Kiks " + this.doing[key].closing; }
+      }
+    };
+    /* English "doing" values double as the dash-suffix status text */
+    Object.keys(T.en.doing).forEach(function (k){ T.en.doing[k] = { status: T.en.doing[k], closing: T.en.doing[k] }; });
+
+    function applyStaticText(){
+      var t = T[lang];
+      document.querySelectorAll("[data-i18n]").forEach(function (el){
+        var key = el.getAttribute("data-i18n");
+        if (t[key] !== undefined) el.textContent = t[key];
+      });
+      document.querySelectorAll("[data-i18n-html]").forEach(function (el){
+        var key = el.getAttribute("data-i18n-html");
+        if (t[key] !== undefined) el.innerHTML = t[key];
+      });
+      document.querySelectorAll("#shift time").forEach(function (el){
+        var v = lang === "da" ? el.getAttribute("data-da") : el.getAttribute("data-en");
+        if (v) el.textContent = v;
+      });
+      if (titleEl) titleEl.textContent = t.metaTitle;
+      if (descMeta) descMeta.setAttribute("content", t.metaDescription);
+      root.setAttribute("lang", lang);
+      langBtns.en.setAttribute("aria-pressed", String(lang === "en"));
+      langBtns.da.setAttribute("aria-pressed", String(lang === "da"));
+    }
+
+    function setLang(next){
+      lang = next;
+      saveLang(next);
+      applyStaticText();
+      render();
+      draw(false);
+    }
+
+    langBtns.en.addEventListener("click", function(){ if (lang !== "en") setLang("en"); });
+    langBtns.da.addEventListener("click", function(){ if (lang !== "da") setLang("da"); });
+
+    applyStaticText();
 
     /* the timetable in the page is the clock's data source */
     var rows = [].slice.call(document.querySelectorAll("#shift li")).map(function(li){
@@ -516,6 +741,7 @@
     if (pretend !== "dark" && pretend !== "light") pretend = null;
 
     function render(){
+      var t = T[lang];
       var m = nowMin();
       var truth = reallyAwake(m);
       var shown = pretend ? pretend === "dark" : truth;
@@ -527,20 +753,18 @@
       rows.forEach(function(r){ r.li.classList.toggle("now", truth && row === r); });
 
       if (pretend && shown !== truth){
-        label.textContent = shown
-          ? "Pretend it is night. He is really asleep."
-          : "Pretend it is day. He is really wide awake.";
+        label.textContent = shown ? t.pretendDark : t.pretendLight;
       } else if (shown){
-        label.textContent = row ? "Kiks is up \u2014 " + row.doing : "Kiks is up";
+        label.textContent = row ? t.kiksUpPrefix + " \u2014 " + t.doing[row.doing].status : t.kiksUpPrefix;
       } else {
-        label.textContent = "Kiks is asleep \u2014 up around half seven";
+        label.textContent = t.kiksAsleepDetail;
       }
 
-      btn.textContent = shown ? "Let Kiks sleep" : "Wake Kiks up";
+      btn.textContent = shown ? t.sleepBtn : t.wakeBtn;
 
       closing.innerHTML = truth
-        ? "Right now, somewhere in this house, <b>Kiks is " + (row ? row.doing : "up") + "</b>."
-        : "Right now, somewhere in this house, <b>Kiks is fast asleep</b>. He will be up around half seven.";
+        ? t.closingLeadIn + "<b>" + (row ? t.closingFor(row.doing) : t.closingUpNoRow) + "</b>."
+        : t.closingLeadIn + "<b>" + t.closingAsleepBold + "</b>" + t.closingAsleepRest;
 
       if (themeMeta) themeMeta.setAttribute("content", shown ? GROUND.dark : GROUND.light);
     }
@@ -564,6 +788,7 @@
     try { seeds = Math.max(0, Math.min(MAX, parseInt(localStorage.getItem("kiks-seeds"), 10) || 0)); } catch (e) { seeds = 0; }
 
     function draw(animateLast){
+      var t = T[lang];
       pouch.textContent = "";
       for (var i = 0; i < seeds; i++){
         var s = document.createElement("span");
@@ -573,12 +798,12 @@
       }
       root.style.setProperty("--stuff", (1 + (seeds / MAX) * 0.5).toFixed(3));
 
-      if (seeds === 0) msg.textContent = "Cheeks empty. He can fit about twenty.";
-      else if (seeds === 1) msg.textContent = "One seed in there. Room for plenty more.";
-      else if (seeds < MAX) msg.textContent = seeds + " seeds in there. Room for more.";
-      else msg.textContent = "Both cheeks completely full. He is off to hide them.";
+      if (seeds === 0) msg.textContent = t.pouchEmpty;
+      else if (seeds === 1) msg.textContent = t.pouchOne;
+      else if (seeds < MAX) msg.textContent = t.pouchMany(seeds);
+      else msg.textContent = t.pouchFull;
 
-      feed.textContent = seeds < MAX ? "Give Kiks a seed" : "Let him unpack";
+      feed.textContent = seeds < MAX ? t.feedBtn : t.unpackBtn;
     }
 
     feed.addEventListener("click", function(){
