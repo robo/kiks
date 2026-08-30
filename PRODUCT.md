@@ -18,11 +18,11 @@ One plain HTML file (`index.html`) with inline CSS and JS. No build step, no fra
 
 ## Product Purpose
 
-A one-page website about Kiks, Zoya's grey dwarf hamster. It exists so Zoya has something of her own that is genuinely hers to show, and so that anyone near the cage knows the real rules — what Kiks can eat, what she must never eat, and how to pick her up. Success is Zoya wanting to show it to someone unprompted, and a visitor getting the care facts right without asking.
+A one-page website about Kiks, Zoya's grey dwarf hamster. It exists so Zoya has something of her own that is genuinely hers to show, and so that anyone near the cage knows the real rules — what Kiks can eat, what he must never eat, and how to pick him up. Success is Zoya wanting to show it to someone unprompted, and a visitor getting the care facts right without asking.
 
 ## Positioning
 
-Not a generic pet template. Everything on the page is about this one animal: a grey dwarf hamster, nocturnal, named Kiks. The site's organizing idea is her night shift — the day/night state of the page is the hamster's own state, not a theme preference.
+Not a generic pet template. Everything on the page is about this one animal: a grey dwarf hamster, nocturnal, named Kiks. The site's organizing idea is his night shift — the day/night state of the page is the hamster's own state, not a theme preference.
 
 ## Operating Context
 
@@ -53,7 +53,7 @@ Viewed on family devices, phones and tablets as much as laptops, often handed ov
 
 1. **This hamster, not hamsters.** Every detail is about Kiks specifically. Generic pet-site content is a failure state.
 2. **Never talk down to her.** The reader is eleven, not four. Respect shows in the writing, not in decoration.
-3. **The care facts are load-bearing.** Playfulness never blurs what is safe to feed or how to hold her.
+3. **The care facts are load-bearing.** Playfulness never blurs what is safe to feed or how to hold him.
 4. **One file, no dependencies to babysit.** Anything added must survive being opened straight from disk years from now.
 5. **Say what is known.** Where a fact about Kiks is a guess, it stays clearly a friendly guess rather than hardening into a claim.
 
